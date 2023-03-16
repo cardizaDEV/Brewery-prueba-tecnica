@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:prueba_tecnica_adrian_carneiro_diz/bloc/brewBloc.dart';
+import 'package:prueba_tecnica_adrian_carneiro_diz/bloc/brewBlocEvent.dart';
+import 'package:prueba_tecnica_adrian_carneiro_diz/bloc/brewBlocState.dart';
+import 'package:prueba_tecnica_adrian_carneiro_diz/screens/detail_screen.dart';
 import 'package:prueba_tecnica_adrian_carneiro_diz/screens/main_screen.dart';
 
 void main() {
@@ -8,62 +13,33 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Brewery',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: MainScreen(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+    return MultiBlocProvider(
+        providers: _getProviders(),
+        child: MaterialApp(
+          title: 'Brewery',
+          debugShowCheckedModeBanner: false,
+          routes: _getRoutes(),
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
+          home: MainScreen(),
+        ));
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+  List<BlocProvider> _getProviders() {
+    return [
+      BlocProvider<BrewsBloc>(
+        create: (context) => BrewsBloc(BrewsBlocEvent,BrewsBlocState),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), 
-    );
+    ];
+  }
+
+  Map<String, WidgetBuilder> _getRoutes() {
+    return {
+      'MainScreen': (BuildContext context) => const MainScreen(),
+      'DetailScreen': (BuildContext context) => const DetailScreen()
+    };
   }
 }
